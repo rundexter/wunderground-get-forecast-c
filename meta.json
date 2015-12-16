@@ -4,23 +4,34 @@
 {
     //Required. Inputs the module expects.
     "inputs": [
-        //e.g.
-        /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "country",
+            "title":"Country"
+        },
+        {
+            "id": "city",
+            "title":"City"
         }
-        */
     ],
     //Required. Outputs the module emits.
     "outputs": [
-      //e.g.
-      /*
         {
-            "id": "from",
-            "title":"From"
+            "id": "period",
+            "title":"Time"
+        },
+        {
+            "id": "title",
+            "title":"Day"
+        },
+        {
+            "id": "fcttext_metric",
+            "title":"Forecast ( C )"
+        },
+        {
+            "id": "simpleforecast",
+            "title":"Forecast Object"
         }
-      */
     ],
-    "title": "wunderground-get_forecast_c" /* Required.A display name for the module */
+    "icon": "dex-wunderground",
+    "title": "Weather Underground - Get Forecast (C)" /* Required.A display name for the module */
 }
