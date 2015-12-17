@@ -57,16 +57,27 @@ module.exports = {
      * @returns {*}
      */
     checkInputStruct: function (step, pickInputs) {
-        var requestData = util.pickStringInputs(step, pickInputs);
+         var requestData = util.pickStringInputs(step, pickInputs),
+            uriData = [];
 
-        if (!requestData.country || !requestData.city) {
+        if (requestData.country)
+            uriData.push(requestData.country);
 
-            this.fail('A [country,city] inputs need for this module.');
+        if (requestData.city)
+            uriData.push(requestData.city);
+
+        if (requestData.state)
+            uriData.push(requestData.state);
+
+
+        if (uriData.length < 2) {
+
+            this.fail('A [country,city or state] inputs need for this module.');
 
             return false;
         }
 
-        return requestData;
+        return uriData;
     },
 
     /**
@@ -77,8 +88,8 @@ module.exports = {
      */
     run: function(step, dexter) {
 
-        var requestData = this.checkInputStruct(step, pickInputs),
-            uri = 'forecast/q/' + requestData.country + '/' + requestData.city + '.json';
+        var uriData = this.checkInputStruct(step, pickInputs),
+            uri = 'forecast/q/' + uriData.join('/') + '.json';
 
         if (!this.authorizeRequest(dexter) || !requestData)
             return;
@@ -88,6 +99,9 @@ module.exports = {
 
             if (error)
                 this.fail(error);
+
+            else if (data.error)
+                this.fail(data.error);
 
             else if (response.statusCode !== 200)
                 this.fail(response.statusCode + ': Something is happened');
