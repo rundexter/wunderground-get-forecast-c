@@ -81,6 +81,24 @@ module.exports = {
         return uriData;
     },
 
+    processResult: function (error, response, data) {
+
+            if (error)
+                this.fail(error);
+
+            else if (data.error)
+                this.fail(data.error);
+
+            else if (data.response.results)
+                this.fail(['Not full input parameters']);
+
+            else if (response.statusCode !== 200)
+                this.fail(response.statusCode + ': Something is happened');
+
+            else
+                this.complete(util.pickResult(data, pickOutputs));
+    },
+
     /**
      * The main entry point for the Dexter module
      *
@@ -92,23 +110,10 @@ module.exports = {
         var uriData = this.checkInputStruct(step, pickInputs),
             uri = 'forecast/q/' + uriData.join('/') + '.json';
 
-        if (!this.authorizeRequest(dexter) || !requestData)
+        if (!this.authorizeRequest(dexter) || !uriData)
             return;
 
 
-        request.get({uri: uri, json: true}, function (error, response, data) {
-
-            if (error)
-                this.fail(error);
-
-            else if (data.error)
-                this.fail(data.error);
-
-            else if (response.statusCode !== 200)
-                this.fail(response.statusCode + ': Something is happened');
-
-            else
-                this.complete(util.pickResult(data, pickOutputs));
-        }.bind(this));
+        request.get({uri: uri, json: true}, this.processResult.bind(this));
     }
 };
